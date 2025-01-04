@@ -1,36 +1,42 @@
-#include <iostream>
-#include <raylib.h>
-
-using namespace std;
+#include "raylib.h"
 
 int main() {
     // Initialize the window
-    InitWindow(1000, 700, "Raylib Follow Along");
+    const int screenWidth = 1920;
+    const int screenHeight = 1080;
+    InitWindow(screenWidth, screenHeight, "3D base");
 
-    // Load the texture
-    Texture2D spaceship = LoadTexture("spaceship.png"); // Ensure the path is correct
-    Vector2 spaceshipMovement = { 100, 100 }; // Initial position of the spaceship
+    // Define the 3D camera
+    Camera3D camera = { 0 };
+    camera.position = Vector3{ 0, 0.5f, 0.5f }; // Camera position
+    camera.target = Vector3(); // Camera looking at point
+    camera.up = Vector3{ 0.0f, 10, 0.0f };       // Camera up vector (normalized)
+    camera.fovy = 90;                           // Camera field-of-view Y
+    camera.projection = CAMERA_PERSPECTIVE;        // Camera mode: perspective
 
-    // Set the movement speed
-    int speed=10;
+    // Main game loop
+    while (!WindowShouldClose()) { // Detect window close button or ESC key
+        // Get delta time
+        float dt = GetFrameTime();
 
-    while (!WindowShouldClose()) {
-        // Update spaceship position based on arrow key input
-        
-        DrawTextureV(spaceship,GetMousePosition(),WHITE);
-
-        // Drawing begins
+        // Start drawing
         BeginDrawing();
-        ClearBackground(BLACK);
+        ClearBackground(WHITE);
 
-        // Draw the spaceship texture at its updated position
-        DrawTextureV(spaceship, spaceshipMovement, WHITE);
+        // Begin 3D mode
+        BeginMode3D(camera);
 
+        // Draw a grid
+        DrawGrid(10, 0.5);
+
+        // End 3D mode
+        EndMode3D();
+
+        // End drawing
         EndDrawing();
     }
 
-    // Unload the texture and close the window
-    UnloadTexture(spaceship);
+    // Close the window and clean up resources
     CloseWindow();
 
     return 0;
